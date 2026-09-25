@@ -1,0 +1,18 @@
+{
+ "x0": 19,
+ "x1": 81,
+ "y0": 8,
+ "y1": 23,
+ "W": 104,
+ "H": 32,
+ "vdp1_addr": 296064,
+ "lwram": 2818536,
+ "sprite": "cmd8 srca=0x9090 size=0x0d20 104x32 4bpp",
+ "font": "malgunbd 16px bolden0.35",
+ "levels": {
+  "ink": 1,
+  "aa1": 13,
+  "aa2": 14,
+  "bg": 15
+ }
+}
