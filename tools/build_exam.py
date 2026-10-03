@@ -122,9 +122,9 @@ SCREENS = {
     #   같은 「卒業試験」 제목이지만 제한턴·득점·본문·지도 문구가 전부 다르고,
     #   /SCHOOL 로드 보정도 다르다(0x13B74 vs 0x1AD64).
     100: dict(title='졸업시험(100점)', file='/SCHOOL',
-              state=(r'D:\hospi\RetroArch\states\Beetle Saturn\Advanced World War'
-                     r' - Sennen Teikoku no Koubou - Last of the Millennium'
-                     r' (Japan) (Rev B) (22M).state1'), lines=[
+              # ★RetroArch state1 은 지워졌다 → 2026-10-03 사용자가 다시 떠 준 한글판 스테이트 사본
+              state=os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                 'work', 'states', 'exam100_K.state'), lines=[
         L('졸업시험', 198, 32, 296, 46, px=14),
         L('제한 턴', 200, 55, 258, 64, px=11, dy=56),
         L('10', 276, 55, 294, 64, px=11, dy=56, r=NUM_R),
