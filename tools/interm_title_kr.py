@@ -43,7 +43,7 @@ TITLES = {
     4:  '바르바로사',      # バルバロッサ     / EASTERN FRONT
     5:  '서부전선1944',    # 西部戦線1944    / WESTERN FRONT
     6:  '동부전선1945',    # 東部戦線1945    / END OF THE THIRD REICH
-    7:  '제도붕괴',        # 帝都崩壊        / LAST OF THE MILLENNIUM
+    7:  '제국붕괴',        # 帝都崩壊        / LAST OF THE MILLENNIUM  (2026-10-03 사용자: 제도→제국)
     8:  '대륙상륙',        # 大陸上陸        / GREAT VICTORY
     9:  '잃어버린시대',     # 失われし時代     / LOST WORLD
     10: '동부전선',        # 東部戦線        / RUSSIAN CAMPAIGN
@@ -257,12 +257,29 @@ def _render(g, kr, keep, shade, rnd):
     return out
 
 
+# ★승인본(사용자 «완벽해») 당시 문구 — 장마다 시작 난수 상태를 이 문구로 고정한다.
+#   난수열 하나를 11장이 이어 쓰므로, 한 장의 문구만 바꿔도 **뒤 장들의 질감이 전부 달라진다**.
+#   ⇒ 승인 문구로 한 번 돌려 각 장의 시작 상태를 기록하고, 실제 문구는 그 상태에서 그린다.
+#     문구를 안 바꾼 장은 승인본과 바이트까지 같다.
+APPROVED = dict(TITLES)
+APPROVED[7] = '제도붕괴'
+
+
 def render_all(D):
     """INTERM 원본 바이트 D → {k: 새 320x80 격자}. 시드 고정(재현 가능)."""
     gs = [grid(D, k) for k in range(11)]
     shade = _learn_shade(gs)
     rnd = random.Random(SEED)
-    return {k: _render(gs[k], kr, DIGIT.get(k), shade, rnd) for k, kr in sorted(TITLES.items())}
+    states = {}
+    for k, kr in sorted(APPROVED.items()):
+        states[k] = rnd.getstate()
+        _render(gs[k], kr, DIGIT.get(k), shade, rnd)
+    out = {}
+    for k, kr in sorted(TITLES.items()):
+        r = random.Random()
+        r.setstate(states[k])
+        out[k] = _render(gs[k], kr, DIGIT.get(k), shade, r)
+    return out
 
 
 def preview(D, res, path):
