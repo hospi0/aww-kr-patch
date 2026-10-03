@@ -35,6 +35,7 @@ import json
 import struct
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kr_rules import squeeze
 import ecc
 import chrono_kr as K
 import build_menu as BM
@@ -169,6 +170,7 @@ def build_slots(need, dead, recl):
 
 def make_enc(rev, slot):
     def enc(s):
+        s = squeeze(s)                   # 문장부호 뒤 공백 1칸 삭제(kr_rules)
         b = bytearray()
         for c in s:
             if '가' <= c <= '힣':

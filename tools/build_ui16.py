@@ -26,6 +26,7 @@
 import os, sys, json, struct
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kr_rules import squeeze
 import ecc
 import ui16_kr as K
 
@@ -92,6 +93,7 @@ CENTER_LABELS = {'本体RAM', 'カートリッジRAM'}
 
 def enc_kr(s, slot, rev):
     """번역문 → 워드열. 한글은 배정한 슬롯, 그 외는 원본 폰트에 있는 글리프."""
+    s = squeeze(s)                       # 문장부호 뒤 공백 1칸 삭제(kr_rules)
     out = bytearray()
     for c in s:
         if c in slot:

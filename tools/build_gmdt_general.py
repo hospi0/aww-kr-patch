@@ -22,6 +22,7 @@ import json
 import struct
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kr_rules import squeeze
 import ecc
 import charmap
 import gmdt_general_kr as G
@@ -53,6 +54,7 @@ def slots():
 
 
 def enc(s, slot, rev):
+    s = squeeze(s)                       # 문장부호 뒤 공백 1칸 삭제(kr_rules)
     """`{FD}` 토큰은 0xFFFD 한 칸으로 나간다."""
     out = bytearray()
     i = 0

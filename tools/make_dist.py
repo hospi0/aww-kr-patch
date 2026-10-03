@@ -8,6 +8,8 @@ v0.91 빌드 절차(2026-10-03):
   2) 복사 → build/v091/track01_v091.bin
      python tools/build_interm_title.py build/v091/track01_v091.bin --write   # 시나리오 타이틀 11장
      python tools/build_chuushi.py      build/v091/track01_v091.bin --write   # 군적 등록 「중지」
+     python tools/fix_punct_space.py    build/v091/track01_v091.bin --write   # 문장부호 뒤 공백(제자리)
+     python tools/build_exam.py         build/v091/track01_v091.bin --align-only --write   # 시험 숫자 정렬
   3) python tools/make_dist.py
 """
 import glob
@@ -71,6 +73,8 @@ BODY = """
      동부전선1945 / 제도붕괴 / 대륙상륙 / 잃어버린시대 / 동부전선)
     원본의 돌에 새긴 질감·검은 테두리·오른쪽 위 조명과 하이라이트를 그대로 살렸습니다.
   - 군적 등록(이름 입력) 화면의 "中止" 버튼 → "중지"
+  - 문장부호 뒤 띄어쓰기 삭제(메시지·연표·사관학교 대사·시나리오 문장)
+  - 사관학교 실기시험 화면의 제한 턴 값과 득점 "/N" 숫자 줄 오른쪽 맞춤
 
 
 [ 알려진 점 ]

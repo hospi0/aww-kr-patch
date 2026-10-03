@@ -20,6 +20,7 @@ import json
 import struct
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kr_rules import squeeze
 import ecc
 import charmap
 import kekka_kr as K
@@ -54,6 +55,7 @@ def tables():
 
 
 def encode_seg(s, slot, rev):
+    s = squeeze(s)                       # 문장부호 뒤 공백 1칸 삭제(kr_rules)
     out = bytearray()
     if True:
         for c in s:

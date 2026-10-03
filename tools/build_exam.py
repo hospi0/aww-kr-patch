@@ -50,8 +50,14 @@ OUTDIR = r'C:\claude\project\aww-kr-patch\work\maps'
 PANEL_INK_RGB = (32, 32, 32)
 
 
-def L(text, x0, y0, x1, y1, px=12, x=None, dy=None):
-    return dict(text=text, clr=(x0, y0, x1, y1), px=px, x=x,
+# ★r = 오른쪽 끝 x(포함). 숫자 줄(제한 턴 값 · `/N`)은 **같은 r 로 오른쪽 정렬**해 자릿수를 맞춘다.
+#   🐞x 를 안 주면 칸 안에서 「손실 0 인 첫 위치」= 칸 왼쪽 끝에 붙는데, 두 줄의 칸 왼쪽 끝이
+#     달라(276 / 260) `10` 과 `/100` 의 끝이 어긋났다(사용자 «너무 거슬린다», 2026-10-03).
+NUM_R = 292
+
+
+def L(text, x0, y0, x1, y1, px=12, x=None, dy=None, r=None):
+    return dict(text=text, clr=(x0, y0, x1, y1), px=px, x=x, r=r,
                 dy=y0 if dy is None else dy)
 
 
@@ -63,9 +69,9 @@ SCREENS = {
         # 제목 상자 안쪽 x200~294 (테두리 x196/x298 은 건드리지 않는다)
         L('초급 실기시험', 198, 32, 296, 46, px=14),
         L('제한 턴', 200, 55, 258, 64, px=11, dy=56),
-        L('3', 284, 55, 292, 64, px=11, dy=56),
+        L('3', 284, 55, 292, 64, px=11, dy=56, r=NUM_R),
         L('득', 201, 69, 213, 78, px=11), L('점', 223, 69, 235, 78, px=11),
-        L('/10', 268, 69, 292, 78, px=11),
+        L('/10', 268, 69, 292, 78, px=11, r=NUM_R),
         L('', 189, 96, 291, 107),          # ★비움 — 원본 일본어만 지운다
         # ★두 줄의 같은 x 에 같은 글자가 오면 공유 타일을 그대로 쓸 수 있다.
         #   원본이 「青色…」/「赤色…」로 2번째 글자가 같아서 공유였다 ⇒ 한글도
@@ -81,9 +87,9 @@ SCREENS = {
     20: dict(title='중급 실기시험', lines=[
         L('중급 실기시험', 198, 32, 296, 46, px=14),
         L('제한 턴', 200, 55, 258, 64, px=11, dy=56),
-        L('5', 284, 55, 292, 64, px=11, dy=56),
+        L('5', 284, 55, 292, 64, px=11, dy=56, r=NUM_R),
         L('득', 201, 69, 213, 79, px=11), L('점', 223, 69, 235, 79, px=11),
-        L('/20', 268, 69, 292, 79, px=11),
+        L('/20', 268, 69, 292, 79, px=11, r=NUM_R),
         L('적의 진군을 저지하고', 196, 96, 303, 107, x=196, px=11),
         L('적의 거점을 점령하라', 196, 112, 297, 123, x=196, px=11),
         L('적 전멸도 가능', 197, 128, 271, 140, x=197, px=11),
@@ -96,15 +102,14 @@ SCREENS = {
         dict(box=(35, 126, 78, 145), text='거점', x=48, y=130, px=12),
     ],
     ),
+    # ★state27(RetroArch) 은 지워졌다 → 사용자가 2026-10-03 다시 떠 준 한글판 스테이트.
     27: dict(title='졸업시험', file='/SCHOOL',
-             state=(r'D:\hospi\RetroArch\states\Beetle Saturn\Advanced World War'
-                    r' - Sennen Teikoku no Koubou - Last of the Millennium'
-                    r' (Japan) (Rev B) (22M).state27'), lines=[
+             state=(r'C:\claude\project\aww-kr-patch\my files\졸업시험.state'), lines=[
         L('졸업시험', 198, 32, 296, 46, px=14),
         L('제한 턴', 200, 55, 258, 64, px=11, dy=56),
-        L('10', 278, 55, 292, 64, px=11, dy=56),
+        L('10', 278, 55, 292, 64, px=11, dy=56, r=NUM_R),
         L('득', 201, 69, 213, 78, px=11), L('점', 223, 69, 235, 78, px=11),
-        L('/40', 268, 69, 292, 78, px=11),
+        L('/40', 268, 69, 292, 78, px=11, r=NUM_R),
         L('목표 도시 2곳을 점령하라', 180, 97, 314, 108, px=11),
     ],
     map=[
@@ -122,9 +127,9 @@ SCREENS = {
                      r' (Japan) (Rev B) (22M).state1'), lines=[
         L('졸업시험', 198, 32, 296, 46, px=14),
         L('제한 턴', 200, 55, 258, 64, px=11, dy=56),
-        L('10', 276, 55, 294, 64, px=11, dy=56),
+        L('10', 276, 55, 294, 64, px=11, dy=56, r=NUM_R),
         L('득', 201, 69, 213, 78, px=11), L('점', 223, 69, 235, 78, px=11),
-        L('/100', 260, 69, 295, 78, px=11),
+        L('/100', 260, 69, 295, 78, px=11, r=NUM_R),
         L('목표 도시 2곳을 점령하라', 180, 96, 314, 107, px=11),
     ],
     map=[
@@ -135,9 +140,9 @@ SCREENS = {
     26: dict(title='상급 실기시험', lines=[
         L('상급 실기시험', 198, 32, 296, 46, px=14),
         L('제한 턴', 200, 55, 258, 64, px=11, dy=56),
-        L('8', 284, 55, 292, 64, px=11, dy=56),
+        L('8', 284, 55, 292, 64, px=11, dy=56, r=NUM_R),
         L('득', 201, 69, 213, 79, px=11), L('점', 223, 69, 235, 79, px=11),
-        L('/30', 268, 69, 292, 79, px=11),
+        L('/30', 268, 69, 292, 79, px=11, r=NUM_R),
         # ★네 줄 모두 x174 로 **한 칸 들여쓰기**(사용자 확정).
         #   「단, 날씨」를 2줄에 붙일 자리가 없어(그 y 에서 손실 0 은 x271~274 뿐)
         #   **3줄로 합쳐** 문구를 재배분했다 — 그 결과 2~4줄이 전부 손실 0 이 됐다.
@@ -356,13 +361,14 @@ def plan_screen(K, S, spec, name):
             #   한 줄만 움직이면 「잃는 획」은 0이 되는 대신 **공유 충돌이 늘어난다**
             #   (실제로 17개까지 늘었다). 의도한 정렬은 그대로 두고 세로·크기만 맞춘다.
             xs = ([ln['x']] if ln['x'] is not None
+                  else [ln['r'] - w2 + 1] if ln.get('r') is not None
                   else range(x0, max(x0 + 1, x1 - w2 + 2)))
             # ⚠️세로도 마찬가지 — 🐞두 줄 중 하나만 1px 올라가(112/127) 공유 타일에서
             #   픽셀이 어긋나 충돌이 1개→17개로 폭증했다. x 를 고정한 줄은 y 도 고정한다.
             # ⚠️하한을 dy 보다 **위로 내리면 안 된다** — 🐞1px 위(dy-1)를 후보에 넣었더니
             #   제목이 상자 위 테두리 셀행(cy3)을, 제한턴 숫자가 cy6 을 침범해
             #   **위쪽이 통째로 잘렸다**(사용자 지적). 아래로만 밀 수 있다.
-            ys = ([ln['dy']] if ln['x'] is not None
+            ys = ([ln['dy']] if ln['x'] is not None or ln.get('r') is not None
                   else range(ln['dy'], ln['dy'] + 3))
             for ty_ in ys:
                 for tx_ in xs:
@@ -457,6 +463,79 @@ def preview(shown, cells, cram, path):
     print('    미리보기:', path)
 
 
+DST = next((a for a in sys.argv[1:] if not a.startswith('--')), None)   # 기록 대상 이미지(없으면 옛 F: 경로)
+
+
+def align_only(write):
+    """숫자 줄 오른쪽 정렬(NUM_R) **만** 반영한다 — 2026-10-03.
+
+    ★계획 전체를 다시 쓰면 안 된다: 시험 화면 계획에는 강의 빌더 등이 **나중에 다시 쓴 셀**도
+      들어 있어(실측: /KOUGI 0x661C6 이 원본도 계획값도 아님) 통째로 쓰면 그 결과를 덮는다.
+    ⇒ 옛 배치(r 없음)와 새 배치(r 있음)로 계획을 두 번 세워 **서로 다른 셀만** 고르고,
+      대상 이미지의 그 셀이 **옛 계획값과 정확히 같을 때만** 새 값으로 바꾼다.
+    """
+    import ecc
+    from isoread import RAW, HDR, USER, read_range
+    if not DST:
+        raise SystemExit('--align-only 는 대상 이미지 인자가 필요하다')
+    files, edits = {}, collections.defaultdict(dict)
+    for n, spec in sorted(SCREENS.items()):
+        path = spec.get('file', '/KOUGI')
+        if spec.get('state') and not os.path.exists(spec['state']):
+            print(' ⚠️state%d 스테이트 없음 → 건너뜀' % n)
+            continue
+        if path not in files:
+            files[path] = load_file(path)
+        KE, K = files[path]
+        S = (load_ext(spec['state']) if spec.get('state') else load_state(n))
+        old_spec = dict(spec, lines=[dict(l, r=None) for l in spec['lines']])
+        _, w_old, _, _, _ = plan_screen(K, S, old_spec, 'state%d 옛 배치' % n)
+        _, w_new, shown, cells, cram = plan_screen(K, S, spec, 'state%d 새 배치' % n)
+        preview(shown, cells, cram, os.path.join(OUTDIR, '_시험%d_한글.png' % n))
+        diff = {o: (w_old.get(o, K[o:o + 64]), b) for o, b in w_new.items()
+                if w_old.get(o, K[o:o + 64]) != b}
+        print(' ▶state%d 숫자 정렬로 바뀌는 셀 %d개' % (n, len(diff)))
+        for o, v in diff.items():
+            if o in edits[path] and edits[path][o] != v:
+                raise SystemExit('화면 간 충돌 @0x%x' % o)
+            edits[path][o] = v
+    with open(DST, 'rb') as r:
+        for path, ed in edits.items():
+            KE, _ = files[path]
+            cur = read_range(r, KE['lba'], KE['size'])
+            bad = [o for o, (a, b) in ed.items() if cur[o:o + 64] not in (a, b)]
+            if bad:
+                raise SystemExit('%s 대조 실패 %d셀(예: 0x%x) — 대상의 현재 값이 옛 계획과 다르다'
+                                 % (path, len(bad), bad[0]))
+            print('%-8s 바꿀 셀 %d개 — 대상 현재값 대조 통과' % (path, len(ed)))
+    if not write:
+        print('드라이런 — 기록 안 함 (--write).')
+        return
+    touched = set()
+    with open(DST, 'r+b') as w:
+        for path, ed in edits.items():
+            KE, _ = files[path]
+            for o, (a, b) in ed.items():
+                for k in range(64):
+                    p = o + k
+                    sec = KE['lba'] + p // USER
+                    w.seek(sec * RAW + HDR + p % USER)
+                    w.write(b[k:k + 1])
+                    touched.add(sec)
+        for sec in sorted(touched):
+            w.seek(sec * RAW)
+            raw = w.read(RAW)
+            w.seek(sec * RAW)
+            w.write(ecc.fix_sector(raw))
+    with open(DST, 'rb') as r:
+        for path, ed in edits.items():
+            KE, _ = files[path]
+            cur = read_range(r, KE['lba'], KE['size'])
+            if any(cur[o:o + 64] != b for o, (a, b) in ed.items()):
+                raise SystemExit('독립검증 실패 %s' % path)
+    print('기록 완료 — %d섹터, 독립검증 통과' % len(touched))
+
+
 def main():
     sys.stdout.reconfigure(encoding='utf-8')
     revert = '--revert' in sys.argv
@@ -464,11 +543,17 @@ def main():
     write = '--write' in sys.argv or revert or resync
     files = {}
     plans = collections.defaultdict(list)
+    if '--align-only' in sys.argv:
+        return align_only(write)
     for n, spec in sorted(SCREENS.items()):
         path = spec.get('file', '/KOUGI')
         if path not in files:
             files[path] = load_file(path)
         KE, K = files[path]
+        if spec.get('state') and not os.path.exists(spec['state']):
+            # ⚠️스테이트가 없으면 셀 배치(PNT)를 알 수 없다 — 그 화면은 이번 기록에서 빠진다
+            print(' ⚠️state%d 스테이트 없음 → 이 화면 건너뜀: %s' % (n, spec['state']))
+            continue
         S = (load_ext(spec['state']) if spec.get('state') else load_state(n))
         d, want, shown, cells, cram = plan_screen(K, S, spec,
                                                   'state%d %s' % (n, path))
@@ -493,7 +578,7 @@ def main():
     for path in list(plans):
         KE, K = files[path]
         print('── %s 기록' % path)
-        write_plan(plans[path], K, KE['lba'], KE['size'], revert, resync)
+        write_plan(plans[path], K, KE['lba'], KE['size'], revert, resync, dst=DST)
 
 
 if __name__ == '__main__':

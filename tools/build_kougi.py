@@ -431,12 +431,12 @@ def load_kougi():
         return KE, read_range(f, KE['lba'], KE['size'])
 
 
-def write_plan(plan, K, lba, size, revert=False, resync=False):
+def write_plan(plan, K, lba, size, revert=False, resync=False, dst=None):
     """[(파일오프셋, 64B)] 를 F: ISO 에 기록하고 EDC/ECC 재계산 + 독립 되읽기 검증.
 
     ⚠️`--revert` 는 「패치된 값」에서 출발하므로 대조를 걸지 않는다(걸면 되돌리기가 막힌다).
     """
-    dst = os.path.join(OUT_ISO_DIR, os.path.basename(TRACK1))
+    dst = dst or os.path.join(OUT_ISO_DIR, os.path.basename(TRACK1))
     if not os.path.exists(dst):
         raise SystemExit('대상 ISO 없음: %s' % dst)
 

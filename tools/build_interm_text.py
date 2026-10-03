@@ -24,6 +24,7 @@ import struct
 from collections import Counter
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kr_rules import squeeze
 import ecc
 import interm_kr as K
 import interm_small_kr as T
@@ -86,7 +87,7 @@ def expand(pool, kr1, g, rows):
     out = dict(kr1)
     for start, (cnt, text) in g.items():
         widths = [int(rows[start + k]['cells']) for k in range(cnt)]
-        lines = wrap(text, widths)
+        lines = wrap(squeeze(text), widths)   # ★접기 전에 공백 정리
         if lines is None:
             raise SystemExit('%s rec%d 문단 줄바꿈 실패: %r' % (pool, start, text))
         for k, ln in enumerate(lines):
@@ -118,6 +119,7 @@ def build_slots(texts, cm):
 
 
 def enc(s, slot, rev):
+    s = squeeze(s)                       # 문장부호 뒤 공백 1칸 삭제(kr_rules)
     out = bytearray()
     for c in s:
         if '가' <= c <= '힣':

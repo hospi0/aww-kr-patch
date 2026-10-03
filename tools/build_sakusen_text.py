@@ -23,6 +23,7 @@ import json
 import struct
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kr_rules import squeeze
 import ecc
 import sakucg_kr as F
 import sakusen_kr as K
@@ -66,6 +67,7 @@ def rev_map():
 
 
 def enc(s, slot, rev):
+    s = squeeze(s)                       # 문장부호 뒤 공백 1칸 삭제(kr_rules)
     out = bytearray()
     for c in s:
         if '가' <= c <= '힣':
