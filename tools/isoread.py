@@ -1,7 +1,7 @@
 """Track 01 (MODE1/2352) ISO9660 리더 - 읽기 전용 조사용."""
 import os, struct, sys
 
-ROM_DIR = r"C:\claude\roms\ss\Advanced World War - Sennen Teikoku no Koubou - Last of the Millennium (Japan) (Rev B) (22M)"
+ROM_DIR = r"C:\claude\roms\ss\완료\Advanced World War - Sennen Teikoku no Koubou - Last of the Millennium (Japan) (Rev B) (22M)"
 TRACK1 = os.path.join(ROM_DIR, "Advanced World War - Sennen Teikoku no Koubou - Last of the Millennium (Japan) (Rev B) (22M) (Track 01).bin")
 
 RAW = 2352
