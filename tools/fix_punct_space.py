@@ -90,17 +90,6 @@ JOBS = [
     ('chrono', enc_chrono, ['GMSELDT'], [
         '「전투 파쇼」 결성',
     ]),
-    ('school LINES', enc_school, ['SCHOOL'], [
-        '되어 있다. 지금까지처럼',
-        '가상 적국인 적국, 그 거점 ',
-        '항공기를 고르고 곧바로「발진」 ',
-        '바뀐다. 이는 그 병기가「행동 ',
-        '된다. 적군 행동을 보며 다음 ',
-        '거듭 말한다. 되도록      ',
-        '다음은 날씨 강의다. 방금 말한',
-        '뭐, 이 정도 날씨라면     ',
-        '문제는 날씨가 비, 눈이    ',
-    ]),
 ]
 
 
@@ -147,10 +136,56 @@ def interm_edits(f, files):
             off, cells = int(r['offset'], 16), int(r['cells'])
             ob = enc(lo[k]).ljust(cells * 2, b'\x00')
             nb = enc(ln[k]).ljust(cells * 2, b'\x00')
+            if d[off:off + cells * 2] == nb:
+                continue                       # 이미 고친 줄
             if d[off:off + cells * 2] != ob:
                 raise SystemExit('★interm %s rec%d 현재 기록이 옛 문장과 다르다' % (pool, start + k))
             if ob != nb:
                 out.append((lba, off, ob, nb, 'interm /INTERM 0x%06x  %s → %s' % (off, lo[k], ln[k])))
+    return out
+
+
+def school_edits(f, files):
+    """사관학교 본문 — **레코드 단위**로 옛/새 번역표의 빌더 계획을 비교한다.
+
+    ⛔문자열 검색은 안 된다: 「다. 」 같은 짧은 조각이 /SCHOOL 다른 문장 속에서도 잡혀
+      104곳이 걸렸다. 빌더(build_school_text.plan_text)가 만드는 레코드 바이트를
+      옛 표(work/school/school_kr_before_squeeze.py = 커밋 eb6a12f)와 새 표로 각각 만들어
+      **달라지는 레코드만**, 이미지 현재값이 옛 계획과 같을(또는 이미 새 계획일) 때 쓴다.
+    """
+    import importlib.util
+    import build_school_text as B
+    if 'SCHOOL' not in files:
+        h, _, _, _ = find_dirrec(f, 'SCHOOL')
+        _, lba, size, _ = h[0]
+        files['SCHOOL'] = (lba, read_file(f, lba, size))
+    lba, d = files['SCHOOL']
+    t, rev = B.tables()
+    slot = _json('school_slots.json')
+    new_K = B.K
+    spec = importlib.util.spec_from_file_location(
+        'school_kr_old', os.path.join(ROOT, 'work', 'school', 'school_kr_before_squeeze.py'))
+    old_K = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(old_K)
+    keep = B.squeeze
+    try:
+        B.K, B.squeeze = old_K, (lambda x: x)
+        po = {o: nb for o, _, nb, _ in B.plan_text(d, slot, rev, t)}
+        B.K, B.squeeze = new_K, keep
+        pn = {o: (nb, tag) for o, _, nb, tag in B.plan_text(d, slot, rev, t)}
+    finally:
+        B.K, B.squeeze = new_K, keep
+    out = []
+    for o, (nb, tag) in sorted(pn.items()):
+        ob = po[o]
+        if ob == nb:
+            continue
+        cur = d[o:o + len(nb)]
+        if cur == nb:
+            continue
+        if cur != ob:
+            raise SystemExit('★school %s @0x%x 현재 기록이 옛 계획과 다르다' % (tag, o))
+        out.append((lba, o, ob, nb, 'school /SCHOOL 0x%06x %s' % (o, tag)))
     return out
 
 
@@ -191,8 +226,12 @@ def main():
                                 hit += 1
                             i = d.find(old, i + 1)
                     if not hit:
+                        # 이미 고친 자리(새 문장이 있다)면 건너뛴다 — 도구를 여러 번 돌려도 된다
+                        if old == new or any(files[nm][1].find(new) >= 0 for nm in names if nm in files):
+                            continue
                         raise SystemExit('★못 찾음 [%s] %r — 인코딩이 기록과 다르다' % (tag, a))
         edits += interm_edits(f, files)
+        edits += school_edits(f, files)
     for e in edits:
         print('  ' + e[4])
     print('고칠 곳 %d' % len(edits))
